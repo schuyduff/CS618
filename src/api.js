@@ -1,4 +1,8 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+// Same-origin by default: Vite dev server proxies /api → backend :3000,
+// so the browser never sends a cross-origin request (no CORS, works in
+// Codespaces regardless of the forwarded *.app.github.dev host).
+// Override with VITE_API_URL only when the backend is served elsewhere.
+const API_URL = import.meta.env.VITE_API_URL || "/api"
 
 async function handle(res) {
   if (!res.ok) {
