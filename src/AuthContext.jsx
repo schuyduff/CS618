@@ -34,6 +34,9 @@ export function AuthProvider({ children }) {
   )
 }
 
+// react-refresh wants only components exported; the provider + this shared
+// hook intentionally live together (standard pattern).
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   return useContext(AuthContext)
 }
