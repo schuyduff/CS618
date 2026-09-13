@@ -5,8 +5,10 @@ on:
 
 env:
   REGISTRY: index.docker.io
-  BACKEND_IMAGE: schuyduff/cs618-backend
-  FRONTEND_IMAGE: schuyduff/cs618-frontend
+  BACKEND_IMAGE: docker.io/schuyduff/cs618-backend
+  FRONTEND_IMAGE: docker.io/schuyduff/cs618-frontend
+  BACKEND_IMAGE_REF: schuyduff/cs618-backend
+  FRONTEND_IMAGE_REF: schuyduff/cs618-frontend
   GCP_REGION: us-central1
 
 jobs:
