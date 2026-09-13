@@ -5,17 +5,18 @@ import {
   getPost,
   listPosts,
 } from "../services/postService.js";
+import { optionalAuth, requireAuth } from "../middleware/auth.js";
 
 const router = Router();
 
-router.get("/", async (_req, res) => {
-  const posts = await listPosts();
+router.get("/", optionalAuth, async (_req, res) => {
+  const posts = await listPosts({ includeAuthor: true, viewer: req.userId });
   res.json({ count: posts.length, posts });
 });
 
-router.post("/", async (req, res) => {
+router.post("/", requireAuth, async (req, res) => {
   try {
-    const post = await createPost(req.body);
+    const post = await createPost({ ...req.body, author: req.userId });
     res.status(201).json(post);
   } catch (err) {
     res.status(400).json({ error: err.message });

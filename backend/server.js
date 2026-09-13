@@ -3,6 +3,8 @@ import cors from "cors";
 import mongoose from "mongoose";
 import Post from "./models/Post.js";
 import postsRouter from "./routes/posts.js";
+import usersRouter from "./routes/users.js";
+import { optionalAuth } from "./middleware/auth.js";
 
 const MONGODB_URI =
   process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/cs618";
@@ -29,6 +31,8 @@ app.get("/", async (_req, res) => {
   });
 });
 
+app.use(optionalAuth);
+app.use("/api/users", usersRouter);
 app.use("/api/posts", postsRouter);
 
 app.listen(PORT, () => {
