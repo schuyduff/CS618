@@ -1,0 +1,71 @@
+name: CD
+on:
+  push:
+    branches: [main]
+
+env:
+  REGISTRY: index.docker.io
+  BACKEND_IMAGE: schuyduff/cs618-backend
+  FRONTEND_IMAGE: schuyduff/cs618-frontend
+  GCP_REGION: us-central1
+
+jobs:
+  deploy:
+    name: Push images + deploy Cloud Run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build + push backend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ env.BACKEND_IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build + push frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ env.FRONTEND_IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_JSON }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Deploy backend to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: cs618-backend
+          region: ${{ env.GCP_REGION }}
+          image: ${{ env.BACKEND_IMAGE }}:latest
+          env_vars: |-
+            MONGODB_URI=${{ secrets.ATLAS_URI }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+
+      - name: Deploy frontend to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: cs618-frontend
+          region: ${{ env.GCP_REGION }}
+          image: ${{ env.FRONTEND_IMAGE }}:latest
+          env_vars: |-
+            BACKEND_URL=${{ secrets.BACKEND_URL }}
