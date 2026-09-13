@@ -1,38 +1,51 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchPosts } from "./api.js";
-import CreatePost from "./components/CreatePost.jsx";
-import PostList from "./components/PostList.jsx";
-import "./App.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
+import CreatePost from "./components/CreatePost"
+import PostList from "./components/PostList"
+import Login from "./components/Login"
+import Signup from "./components/Signup"
+import { AuthProvider, useAuth } from "./AuthContext"
 
-export default function App() {
-  const {
-    data: posts = [],
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["posts"],
-    queryFn: fetchPosts,
-  });
+const queryClient = new QueryClient()
 
-  return (
-    <div className="blog">
-      <header className="masthead">
-        <h1>CS618 Blog</h1>
-        <p className="tagline">
-          Post a recipe or update and see it appear instantly.
-        </p>
-      </header>
-      <main>
-        <CreatePost />
-        <section className="feed">
-          <h2>All posts</h2>
-          <PostList
-            posts={posts}
-            isLoading={isLoading}
-            isError={isError}
-          />
-        </section>
-      </main>
-    </div>
-  );
+function RequireAuth({ children }) {
+  const { user } = useAuth()
+  if (!user) return <Navigate to="/login" replace />
+  return children
 }
+
+function Home() {
+  return (
+    <main className="container">
+      <h1>CS618 Blog</h1>
+      <PostList />
+    </main>
+  )
+}
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/new"
+              element={
+                <RequireAuth>
+                  <CreatePost />
+                </RequireAuth>
+              }
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </QueryClientProvider>
+  )
+}
+
+export default App
