@@ -1,12 +1,36 @@
 services:
   mongo:
-    image: mongo:8
-    container_name: mongodb
+    image: mongo:7
+    container_name: cs618_mongo
     restart: unless-stopped
     ports:
       - "27017:27017"
     volumes:
-      - mongodata:/data/db
+      - mongo_data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: cs618_backend
+    restart: unless-stopped
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/cs618
+      PORT: "3000"
+      JWT_SECRET: cs618-docker-dev-secret
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+
+  frontend:
+    build: .
+    container_name: cs618_frontend
+    restart: unless-stopped
+    environment:
+      BACKEND_URL: http://backend:3000
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
 
 volumes:
-  mongodata:
+  mongo_data:
