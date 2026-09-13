@@ -13,13 +13,13 @@ async function handle(res) {
 }
 
 export async function fetchPosts() {
-  const res = await fetch(`${API_URL}/api/posts`);
+  const res = await fetch(`${API_URL}/posts`);
   const body = await handle(res);
   return body.posts;
 }
 
 export async function createPost(post) {
-  const res = await fetch(`${API_URL}/api/posts`, {
+  const res = await fetch(`${API_URL}/posts`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(post),
