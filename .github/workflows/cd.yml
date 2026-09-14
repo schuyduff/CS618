@@ -2,6 +2,13 @@ name: CD
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      services:
+        description: "Deploy services (comma-separated: backend, frontend, or both)"
+        required: true
+        default: "backend,frontend"
+        type: string
 
 env:
   REGISTRY: index.docker.io
