@@ -322,3 +322,58 @@
   border: 1px dashed var(--border);
   border-radius: 12px;
 }
+
+/* A3 root-path auth/create buttons — stacked, one per line, accent-styled.
+   Hook: PostList.jsx header > nav (the Log in / Sign up / + Create Post trio).
+   Extends the app's --accent language; no component edits. */
+.site-header nav {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.site-header nav a,
+.site-header nav .link-button {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent);
+  transition: background 0.15s ease, transform 0.05s ease;
+  cursor: pointer;
+}
+
+.site-header nav a:hover,
+.site-header nav .link-button:hover {
+  background: var(--accent-hover, #8f2fd9);
+}
+
+.site-header nav a:active,
+.site-header nav .link-button:active {
+  transform: translateY(1px);
+}
+
+.site-header nav a.create-link {
+  background: var(--accent);
+}
+
+.site-header nav a:not(.create-link) {
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
+
+.site-header nav a:not(.create-link):hover {
+  background: var(--accent-bg);
+  filter: brightness(1.1);
+}
