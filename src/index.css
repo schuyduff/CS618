@@ -109,3 +109,38 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+/* A3 buttons — login / signup / create-post. Hooks: existing struct classes,
+   no component edits, matches --accent token set. */
+.auth-form button[type="submit"],
+.post-form button[type="submit"] {
+  background: var(--accent);
+  color: #fff;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 0.65em 1.4em;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+.auth-form button[type="submit"]:hover,
+.post-form button[type="submit"]:hover {
+  background: #8f2fd9;
+}
+.auth-form button[type="submit"]:active,
+.post-form button[type="submit"]:active {
+  transform: translateY(1px);
+}
+.auth-form button[type="submit"]:disabled,
+.post-form button[type="submit"]:disabled {
+  background: var(--accent-bg);
+  color: var(--text);
+  border-color: var(--accent-border);
+  cursor: not-allowed;
+}
+.auth-form a,
+.post-form a {
+  color: var(--accent);
+  font-weight: 600;
+}
