@@ -66,6 +66,7 @@ jobs:
         uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: cs618-frontend
+          project: ${{ secrets.GCP_FRONTEND_PROJECT }}
           region: ${{ env.GCP_REGION }}
           flags: --allow-unauthenticated
           image: ${{ env.FRONTEND_IMAGE }}:latest
