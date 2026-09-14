@@ -56,7 +56,7 @@ jobs:
         with:
           service: cs618-backend
           region: ${{ env.GCP_REGION }}
-          allow-unauthenticated: true
+          flags: --allow-unauthenticated
           image: ${{ env.BACKEND_IMAGE }}:latest
           env_vars: |-
             MONGODB_URI=${{ secrets.ATLAS_URI }}
@@ -67,7 +67,7 @@ jobs:
         with:
           service: cs618-frontend
           region: ${{ env.GCP_REGION }}
-          allow-unauthenticated: true
+          flags: --allow-unauthenticated
           image: ${{ env.FRONTEND_IMAGE }}:latest
           env_vars: |-
             BACKEND_URL=${{ secrets.BACKEND_URL }}
