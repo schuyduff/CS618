@@ -9,7 +9,7 @@ import { optionalAuth, requireAuth } from "../middleware/auth.js";
 
 const router = Router();
 
-router.get("/", optionalAuth, async (_req, res) => {
+router.get("/", optionalAuth, async (req, res) => {
   const posts = await listPosts({ includeAuthor: true, viewer: req.userId });
   res.json({ count: posts.length, posts });
 });
