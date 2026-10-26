@@ -74,6 +74,23 @@ function RecipeForm({ recipe }) {
     setIngredients((list) => [...list, ""])
   }
 
+  // A multi-line paste (e.g. a "- item" list from docs/test-recipes.md) becomes one row per line,
+  // filling row i if it's empty, else inserting after it. Single-line pastes behave normally.
+  function pasteIngredients(i, e) {
+    const lines = e.clipboardData
+      .getData("text")
+      .split(/\r?\n/)
+      .map((line) => line.replace(/^\s*(?:[-*•]|\d+[.)])\s+/, "").trim())
+      .filter((line) => line && !/^\**ingredients:?\**:?$/i.test(line))
+    if (lines.length < 2) return
+    e.preventDefault()
+    setIngredients((list) => {
+      const at = list[i].trim() ? i + 1 : i
+      const rest = list.slice(at + (at === i ? 1 : 0))
+      return [...list.slice(0, at), ...lines, ...rest].slice(0, 100)
+    })
+  }
+
   function removeIngredient(i) {
     setIngredients((list) => list.filter((_, j) => j !== i))
   }
@@ -143,6 +160,7 @@ function RecipeForm({ recipe }) {
       )}
       <fieldset className="grid gap-2">
         <legend className="mb-2 text-sm font-medium leading-none">Ingredients</legend>
+        <p className="-mt-1 mb-1 text-sm text-muted-foreground">Tip: paste a list to add several ingredients at once.</p>
         {ingredients.map((item, i) => (
           <div key={i} className="flex gap-2">
             <Input
@@ -152,6 +170,7 @@ function RecipeForm({ recipe }) {
               maxLength={200}
               autoFocus={focusLast && i === ingredients.length - 1}
               onChange={(e) => setIngredient(i, e.target.value)}
+              onPaste={(e) => pasteIngredients(i, e)}
               onKeyDown={(e) => {
                 if (e.key !== "Enter") return
                 e.preventDefault()
