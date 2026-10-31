@@ -25,11 +25,14 @@ export default function PostStats({ postId }) {
       {daily.data?.length > 0 && (
         <VictoryChart
           domainPadding={20}
-          height={250}
+          height={270}
+          padding={{ top: 20, bottom: 60, left: 50, right: 30 }}
           title="Daily views"
           desc={daily.data.map((d) => `${d.date}: ${d.views}`).join(", ")}
         >
-          <VictoryAxis fixLabelOverlap style={axisStyle} />
+          <VictoryAxis
+            style={{ ...axisStyle, tickLabels: { ...axisStyle.tickLabels, angle: -45, textAnchor: "end", verticalAnchor: "middle" } }}
+          />
           <VictoryAxis dependentAxis tickFormat={(t) => (Number.isInteger(t) ? t : "")} style={axisStyle} />
           <VictoryBar
             data={daily.data.map((d) => ({ x: d.date.slice(5), y: d.views }))}
