@@ -93,3 +93,42 @@ export async function login({ identifier, password }) {
   })
   return handle(res)
 }
+
+export async function fetchPosts() {
+  const res = await fetch(`${API_URL}/posts`)
+  const body = await handle(res)
+  return body.posts
+}
+
+export async function fetchPost(id) {
+  const res = await fetch(`${API_URL}/posts/${encodeURIComponent(id)}`)
+  return handle(res)
+}
+
+export async function createPost(data) {
+  const res = await fetch(`${API_URL}/posts`, {
+    method: "POST",
+    headers: authHeaders({ "Content-Type": "application/json" }),
+    body: JSON.stringify(data),
+  })
+  return handle(res)
+}
+
+export async function trackEvent({ postId, session, action }) {
+  const res = await fetch(`${API_URL}/events`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ postId, session, action }),
+  })
+  return handle(res)
+}
+
+export async function fetchTotalViews(postId) {
+  const res = await fetch(`${API_URL}/events/totalViews/${encodeURIComponent(postId)}`)
+  return handle(res)
+}
+
+export async function fetchDailyViews(postId) {
+  const res = await fetch(`${API_URL}/events/dailyViews/${encodeURIComponent(postId)}`)
+  return handle(res)
+}

@@ -3,9 +3,11 @@ import { LogOut, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Login from "./components/Login"
 import MyRecipes from "./components/MyRecipes"
+import PostDetail from "./components/PostDetail"
+import PostForm from "./components/PostForm"
 import RecipeDetail from "./components/RecipeDetail"
 import { EditRecipe, NewRecipe } from "./components/RecipeForm"
-import RecipeList from "./components/RecipeList"
+import RecipeList, { BlogPosts } from "./components/RecipeList"
 import Signup from "./components/Signup"
 import ThemeToggle from "./components/ThemeToggle"
 import { useAuth } from "./AuthContext"
@@ -27,11 +29,14 @@ function Layout() {
       <header className="border-b bg-background">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-4">
           <Link to="/" className="font-serif text-3xl lowercase italic tracking-tight text-primary">
-            cs618 recipes
+            cs618 recipes &amp; blog
           </Link>
           <nav className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <NavLink to="/" end className={navClass}>
               Home
+            </NavLink>
+            <NavLink to="/blog" className={navClass}>
+              Blog
             </NavLink>
             {user && (
               <NavLink to="/my" className={navClass}>
@@ -43,6 +48,13 @@ function Layout() {
                 <Plus /> New recipe
               </Link>
             </Button>
+            {user && (
+              <Button variant="outline" size="sm" className="font-sans text-xs font-bold uppercase tracking-[0.15em]" asChild>
+                <Link to="/posts/new">
+                  <Plus /> New post
+                </Link>
+              </Button>
+            )}
             {user ? (
               <>
                 <span className="text-sm italic text-muted-foreground">Hi, {user.username}</span>
@@ -85,12 +97,15 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<RecipeList />} />
+          <Route path="/blog" element={<BlogPosts />} />
           <Route element={<Page />}>
             <Route path="/recipes/:id" element={<RecipeDetail />} />
+            <Route path="/posts/:id" element={<PostDetail />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
             <Route element={<RequireAuth />}>
               <Route path="/new" element={<NewRecipe />} />
+              <Route path="/posts/new" element={<PostForm />} />
               <Route path="/recipes/:id/edit" element={<EditRecipe />} />
               <Route path="/my" element={<MyRecipes />} />
             </Route>

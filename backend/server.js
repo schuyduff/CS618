@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import Post from "./models/Post.js";
+import eventsRouter from "./routes/events.js";
 import imagesRouter from "./routes/images.js";
 import postsRouter from "./routes/posts.js";
 import recipesRouter from "./routes/recipes.js";
@@ -38,6 +39,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/posts", postsRouter);
 app.use("/api/recipes", recipesRouter);
 app.use("/api/images", imagesRouter);
+app.use("/api/events", eventsRouter);
 
 // JSON errors for anything passed to next(err); must stay after the routers.
 app.use((err, _req, res, _next) => {

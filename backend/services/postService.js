@@ -1,12 +1,17 @@
 import mongoose from "mongoose";
+import Event from "../models/Event.js";
 import Post from "../models/Post.js";
 
+function badRequest(message) {
+  return Object.assign(new Error(message), { statusCode: 400 });
+}
+
 function validateInput({ title, content }) {
-  if (!title || !title.trim()) {
-    throw new Error("Title is required");
+  if (typeof title !== "string" || !title.trim()) {
+    throw badRequest("Title is required");
   }
-  if (!content || !content.trim()) {
-    throw new Error("Content is required");
+  if (typeof content !== "string" || !content.trim()) {
+    throw badRequest("Content is required");
   }
 }
 
@@ -30,5 +35,7 @@ export async function deletePost(id) {
   if (!mongoose.isValidObjectId(id)) {
     return null;
   }
-  return Post.findByIdAndDelete(id);
+  const post = await Post.findByIdAndDelete(id);
+  if (post) await Event.deleteMany({ post: post._id });
+  return post;
 }

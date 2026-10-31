@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { Link } from "react-router-dom"
 import { Skeleton } from "@/components/ui/skeleton"
-import { fetchRecipes } from "../api"
+import { fetchPosts, fetchRecipes } from "../api"
 import { FormError } from "./FormBits"
 
 function RecipeCard({ recipe }) {
@@ -19,6 +19,29 @@ function RecipeCard({ recipe }) {
         </h2>
       </div>
     </Link>
+  )
+}
+
+export function BlogPosts() {
+  const { data, isLoading, isError, error } = useQuery({ queryKey: ["posts"], queryFn: fetchPosts })
+
+  return (
+    <section className="mx-auto max-w-3xl px-4 py-12">
+      <h2 className="mb-6 border-b-4 border-primary pb-3 font-display text-3xl font-bold">From the blog</h2>
+      <FormError message={isError && `Couldn’t load posts: ${error.message}`} />
+      {isLoading && <Skeleton className="h-16 w-full" />}
+      {data?.length === 0 && <p className="italic text-muted-foreground">No blog posts yet.</p>}
+      <ul className="divide-y">
+        {data?.map((post) => (
+          <li key={post._id} className="py-4">
+            <Link to={`/posts/${post._id}`} className="font-display text-xl font-bold hover:text-primary hover:underline">
+              {post.title}
+            </Link>
+            <p className="text-sm italic text-muted-foreground">{new Date(post.createdAt).toLocaleDateString()}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }
 
@@ -54,6 +77,7 @@ export default function RecipeList() {
           </div>
         </div>
       </section>
+      <BlogPosts />
     </>
   )
 }
